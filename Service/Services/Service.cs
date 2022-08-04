@@ -2,6 +2,7 @@
 using core6.Services;
 using core6.UnitOfWorks;
 using Microsoft.EntityFrameworkCore;
+using Service.Exceptions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -51,7 +52,12 @@ namespace Service.Services
 
         public async Task<T> GetByIdAsync(int id)
         {
-            return await _repository.GetByIdAsync(id);
+            var hasProduct= await _repository.GetByIdAsync(id);
+            if (hasProduct == null)
+            {
+                throw new ClientSideException($"{typeof(T).Name} ({id}) not found");
+            }
+            return hasProduct;
         }
 
         public async Task RemoveAsync(T entity)

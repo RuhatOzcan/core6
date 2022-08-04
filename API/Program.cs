@@ -1,12 +1,20 @@
+using API.Filters;
+using API.MiddleWares;
+using API.Modules;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using core6.Repositories;
 using core6.Services;
 using core6.UnitOfWorks;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Repository;
 using Repository.Repositories;
 using Repository.UnifOfWorks;
 using Service.Mapping;
 using Service.Services;
+using Service.Validations;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,16 +23,28 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => options.Filters.Add(new ValidateFilterAttribute())).AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<ProductDtoValidator>());
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+
+builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder => containerBuilder.RegisterModule(new RepoServiceModule()));
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
-builder.Services.AddScoped(typeof(IService<>),typeof(Service<>));
+builder.Services.AddScoped(typeof(NotFoundFilter<>));
+
+
 builder.Services.AddAutoMapper(typeof(MapProfile));
+
+
+
+
 
 builder.Services.AddDbContext<AppDbContext>(x =>
 {
@@ -33,6 +53,9 @@ builder.Services.AddDbContext<AppDbContext>(x =>
         option.MigrationsAssembly(Assembly.GetAssembly(typeof(AppDbContext)).GetName().Name);
     });
 });
+
+builder.Host.UseServiceProviderFactory
+    (new AutofacServiceProviderFactory());
 
 var app = builder.Build();
 
@@ -44,6 +67,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCustomException();
 
 app.UseAuthorization();
 
