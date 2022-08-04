@@ -37,6 +37,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
+builder.Services.AddMemoryCache();
+
+
 builder.Services.AddScoped(typeof(NotFoundFilter<>));
 
 
@@ -56,6 +59,7 @@ builder.Services.AddDbContext<AppDbContext>(x =>
 
 builder.Host.UseServiceProviderFactory
     (new AutofacServiceProviderFactory());
+
 
 var app = builder.Build();
 
