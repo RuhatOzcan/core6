@@ -1,12 +1,6 @@
 ﻿using core6.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository.Repositories
 {
@@ -26,12 +20,12 @@ namespace Repository.Repositories
 
         public async Task AddAsync(T entity)
         {
-            await _dbSet.AddAsync(entity);  
+            await _dbSet.AddAsync(entity);
         }
 
         public async Task AddRangeAsync(IEnumerable<T> entities)
         {
-            await _dbSet.AddRangeAsync(entities);   
+            await _dbSet.AddRangeAsync(entities);
         }
 
         public async Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
@@ -62,7 +56,7 @@ namespace Repository.Repositories
 
         public void Update(T entity)
         {
-           _dbSet.Update(entity);
+            _dbSet.Update(entity);
         }
 
         public IQueryable<T> Where(Expression<Func<T, bool>> expression)

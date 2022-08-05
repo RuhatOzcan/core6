@@ -1,13 +1,39 @@
-using core6.UnitOfWorks;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
+using MVC;
+using MVC.Modules;
 using Repository;
-using Repository.UnifOfWorks;
+using Service.Mapping;
+using Service.Validations;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<ProductDtoValidator>());
+
+builder.Services.AddAutoMapper(typeof(MapProfile));
+
+
+builder.Services.AddDbContext<AppDbContext>(x =>
+{
+    x.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection"), option =>
+    {
+        option.MigrationsAssembly(Assembly.GetAssembly(typeof(AppDbContext)).GetName().Name);
+    });
+});
+
+builder.Services.AddScoped(typeof(NotFoundFilter<>));
+
+
+
+builder.Host.UseServiceProviderFactory
+    (new AutofacServiceProviderFactory());
+builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder => containerBuilder.RegisterModule(new RepoServiceModule()));
 
 //builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 

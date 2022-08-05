@@ -3,13 +3,7 @@ using core6.Services;
 using core6.UnitOfWorks;
 using Microsoft.EntityFrameworkCore;
 using Service.Exceptions;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Services
 {
@@ -52,7 +46,7 @@ namespace Service.Services
 
         public async Task<T> GetByIdAsync(int id)
         {
-            var hasProduct= await _repository.GetByIdAsync(id);
+            var hasProduct = await _repository.GetByIdAsync(id);
             if (hasProduct == null)
             {
                 throw new ClientSideException($"{typeof(T).Name} ({id}) not found");

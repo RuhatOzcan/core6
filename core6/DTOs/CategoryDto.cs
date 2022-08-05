@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace core6.DTOs
+﻿namespace core6.DTOs
 {
-    public class CategoryDto:BaseDto
+    public class CategoryDto : BaseDto
     {
         public string Name { get; set; }
     }
