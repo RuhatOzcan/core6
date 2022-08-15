@@ -1,0 +1,5 @@
+apý=> https://localhost:7031/
+apý=> http://localhost:5031
+
+ Mvc=>https://localhost:7058
+ Mvc=>http://localhost:5058

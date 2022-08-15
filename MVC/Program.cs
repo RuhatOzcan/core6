@@ -4,6 +4,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using MVC;
 using MVC.Modules;
+using MVC.Services;
 using Repository;
 using Service.Mapping;
 using Service.Validations;
@@ -25,6 +26,16 @@ builder.Services.AddDbContext<AppDbContext>(x =>
     {
         option.MigrationsAssembly(Assembly.GetAssembly(typeof(AppDbContext)).GetName().Name);
     });
+});
+
+builder.Services.AddHttpClient<CategoryApiService>(opt =>
+{
+    opt.BaseAddress = new Uri(builder.Configuration["BaseUrl"]);
+});
+
+builder.Services.AddHttpClient<ProductApiService>(opt =>
+{
+    opt.BaseAddress = new Uri(builder.Configuration["BaseUrl"]);
 });
 
 builder.Services.AddScoped(typeof(NotFoundFilter<>));
